@@ -28,6 +28,19 @@ public class FileService {
     // 文件在本地存储的地址
     private final Path fileStorageLocation;
 
+    /**
+     * 文件本地路径
+     */
+    private String filePath;
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
     @Autowired
     public FileService(FileProperties fileProperties) {
         this.fileStorageLocation = Paths.get(fileProperties.getUploadDir()).toAbsolutePath().normalize();
@@ -57,6 +70,9 @@ public class FileService {
             // Copy file to the target location (Replacing existing file with the same name)
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            String path = targetLocation.toString();
+            this.setFilePath(path);
 
             return fileName;
         } catch (IOException ex) {
